@@ -1,0 +1,23 @@
+#!/bin/bash
+
+compile_cpp(){
+	if [ -e prompt ]; then
+
+		if [ -e input_prompt ]; then
+			if (g++ KommandorMain.cpp); then
+				echo "KommandorMain compiled"
+				if (mv a.out kommandor); then
+					echo "Moved \"a.out\" to kommandor."
+				fi
+			fi
+		fi
+	fi
+}
+
+create_sym_link(){
+	if (ln -s kommandor /usr/bin/kommandor); then
+		echo "kommandor symbolic link generated."
+	fi
+}
+
+compile_cpp
