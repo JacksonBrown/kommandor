@@ -5,7 +5,7 @@
 
 using namespace std;
 
-void userInput();
+void userInputLoop(string x);
 
 // INITIAL VARIABLE CLASS
 class InputVars{
@@ -34,22 +34,11 @@ void inputPromptGen(){
 
 }
 
-// USER INPUT WHILE LOOP
-void userInputLoop(string x){
-    while ( x != "exit" ){
-        if (x == "help"){
-            help();
-            userInput();
-        }
-        else if (x == "exit"){
-            cout << " Goodbye :) " << endl;
-        }
-    }
-}
+
 
 // INPUT PROMPT
 void userInput(){
-	string userInputVar;
+	string userInputVar = "";
 	string userInputPrompt = InpV.inputPrompt + " ";
 
 	cout << userInputPrompt;
@@ -59,4 +48,17 @@ void userInput(){
 	userInputLoop(userInputVar);
 }
 
-
+// USER INPUT WHILE LOOP
+void userInputLoop(string x){
+    if (x == "help"){
+        help();
+        userInput();
+    }
+    else if (x == "exit"){
+        cout << "Good Bye :) " << endl;
+    }
+    else{
+        system( (x).c_str() );
+        userInput();
+    }
+}
