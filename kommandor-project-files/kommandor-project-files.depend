@@ -1,0 +1,24 @@
+# depslib dependency file v1.0
+1460860376 source:/home/kylo/Documents/git-clones/kommandor/kommandor-project-files/main.cpp
+	"kommandor_cmd.h"
+	"user_input.h"
+	"prompt.h"
+
+1460859805 /home/kylo/Documents/git-clones/kommandor/kommandor-project-files/help_cmd.h
+	<iostream>
+	<fstream>
+
+1460860318 /home/kylo/Documents/git-clones/kommandor/kommandor-project-files/kommandor_cmd.h
+	<iostream>
+	<fstream>
+
+1460861261 /home/kylo/Documents/git-clones/kommandor/kommandor-project-files/user_input.h
+	<iostream>
+	<fstream>
+	<iomanip>
+	<cstdlib>
+
+1460860351 /home/kylo/Documents/git-clones/kommandor/kommandor-project-files/prompt.h
+	<iostream>
+	<fstream>
+

@@ -36,6 +36,24 @@ void inputPromptGen(){
 }
 
 // PROMPT
+void help(){
+
+	ifstream helpStream;
+	helpStream.open("README.md");
+	string helpVar;
+
+	if ( helpStream.is_open() ){
+		while ( !helpStream.eof() ){
+			getline(helpStream,helpVar);
+			cout << helpVar << endl;
+		}
+	}
+
+	helpStream.close();
+
+}
+
+// PROMPT
 void prompt(){
 
 	ifstream promptMainStream;
@@ -53,23 +71,6 @@ void prompt(){
 
 }
 
-// PROMPT
-void help(){
-
-	ifstream helpStream;
-	helpStream.open("README.md");
-	string helpVar;
-
-	if ( helpStream.is_open() ){
-		while ( !helpStream.eof() ){
-			getline(helpStream,helpVar);
-			cout << helpVar << endl;
-		}
-	}
-
-	helpStream.close();
-
-}
 
 // INPUT PROMPT
 void userInput(){
