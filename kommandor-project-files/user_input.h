@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
-#include <cstdlib>
 
 using namespace std;
 
@@ -34,14 +33,14 @@ void inputPromptGen(){
 
 }
 
-
-
 // INPUT PROMPT
 void userInput(){
 	string userInputVar = "";
 	string userInputPrompt = InpV.inputPrompt + " ";
 
+    cout << green << endl;
 	cout << userInputPrompt;
+	cout << normal;
 	cin >> userInputVar;
 
 	InpV.input = userInputVar;
@@ -54,9 +53,12 @@ void userInputLoop(string x){
         help();
         userInput();
     }
-    else if (x == "exit"){
-        cout << "Good Bye :) " << endl;
+    else if (x == "emailalias"){
+        emailAlias();
+        userInput();
     }
+    else if (x == "exit")
+        cout << "Good Bye :) " << endl;
     else{
         system( (x).c_str() );
         userInput();
