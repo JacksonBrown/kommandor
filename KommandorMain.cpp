@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <cstdlib>
 
 using namespace std;
 
@@ -8,36 +9,8 @@ using namespace std;
 char blue[] = { 0x1b, '[', '1', ';', '3', '4', 'm', 0 };
 char normal[] = { 0x1b, '[', '0', ';', '3', '9', 'm', 0 };
 
-// INITIAL VARIABLE CLASS
-class InputVars{
-public:
-	string input;
-	string inputPrompt;
-};
-
-static InputVars InpV;
-
-// OPEN PROMPT STREAM
-void inputPromptGen(){
-
-	ifstream promptFileStream;
-	promptFileStream.open("input_prompt");
-	string promptOutput;
-
-	if ( promptFileStream.is_open() ){
-		while ( !promptFileStream.eof() ){
-			promptFileStream >> promptOutput;
-			InpV.inputPrompt = promptOutput;
-		}
-	}
-
-	promptFileStream.close();
-
-}
-
 // PROMPT
 void help(){
-
 	ifstream helpStream;
 	helpStream.open("README.md");
 	string helpVar;
@@ -50,12 +23,15 @@ void help(){
 	}
 
 	helpStream.close();
+}
 
+void showUsers(){
+	system("cat /etc/passwd | grep bash");
+	cout << "\n --- \n" << endl;
 }
 
 // PROMPT
 void prompt(){
-
 	ifstream promptMainStream;
 	promptMainStream.open("prompt");
 	string mainPrompt;
@@ -63,33 +39,29 @@ void prompt(){
 	if ( promptMainStream.is_open() ){
 		while ( !promptMainStream.eof() ){
 			getline(promptMainStream,mainPrompt);
-			cout << blue << mainPrompt << normal << endl;
+			cout << "\n" << blue << mainPrompt << normal << endl;
 		}
 	}
 
 	promptMainStream.close();
-
 }
 
-
-// INPUT PROMPT
-void userInput(){
-	string userInput;
-	string userInputPrompt = InpV.inputPrompt + " ";
-
-	cout << userInputPrompt;
-	cin >> userInput;
-
-	InpV.input = userInput;
-
-	if ( userInput == "help" ){
+void run_test( string x ){
+	if (x == "help" ){
 		help();
 	}
-}
+	else if ( x == "users" ){
+		showUsers();
+	}
+} 
 
-int main(){
-	inputPromptGen();
+int main(int argc, char* argv[]){
 	prompt();
-	userInput();
+	if (argc < 2){
+		cerr << "no options are present." << endl;
+		help();
+		return 1;
+	}
+	run_test(argv[1]);
 	return 0;
 }
