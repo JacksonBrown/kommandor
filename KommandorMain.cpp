@@ -6,8 +6,9 @@
 using namespace std;
 
 //INITAL VARIABLES
-char blue[] = { 0x1b, '[', '1', ';', '3', '4', 'm', 0 };
+char blue  [] = { 0x1b, '[', '1', ';', '3', '4', 'm', 0 };
 char normal[] = { 0x1b, '[', '0', ';', '3', '9', 'm', 0 };
+char yellow[] = { 0x1b, '[', '0', ';', '3', '3', 'm', 0 };
 
 // PROMPT
 void help(){
@@ -26,7 +27,16 @@ void help(){
 }
 
 void showUsers(){
+	cout << yellow << "\nUsers with bash shell: " << normal << endl;
 	system("cat /etc/passwd | grep bash");
+	cout << "\n --- \n" << endl;
+
+	cout << yellow << "\nUsers with zsh shell: " << normal << endl;
+	system("cat /etc/passwd | grep zsh");
+	cout << "\n --- \n" << endl;
+
+	cout << yellow << "\nUsers with ksh shell: " << normal << endl;
+	system("cat /etc/passwd | grep ksh");
 	cout << "\n --- \n" << endl;
 }
 
@@ -56,7 +66,6 @@ void run_test( string x ){
 } 
 
 int main(int argc, char* argv[]){
-	prompt();
 	if (argc < 2){
 		cerr << "no options are present." << endl;
 		help();
