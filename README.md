@@ -2,4 +2,5 @@ Command            | Description
 ------------       | ------------
 help    	   | Displays this
 users		   | Displays the system users
-editnetwork	   | reads the /etc/network/interfaces file
+groups	   	   | Displays the system groups
+removeuser	   | completely removes a specified user
