@@ -45,7 +45,8 @@ void help(){
 	cout << "removeuser : Completely removes a specified user." << endl; 
 	cout << "memuse     : Show the system memory usage." << endl;
 	cout << "encrypt    : Encrypts a file using gpg." << endl;
-	cout << "serverstat : Display the server utilization.\n" << endl;
+	cout << "serverstat : Display the server utilization." << endl;
+	cout << "setiptable : Interactively generate iptables firewalls. \n"
 }
 
 void showUsers(){
