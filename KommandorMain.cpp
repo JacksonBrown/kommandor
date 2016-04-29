@@ -134,7 +134,6 @@ void serverUtilization( int argc, char* argv[]){
 	}
 }
 
-/*
 void editFirewall(int argc, char* argv[]){
 	string argtwo = argv[2];
 	if ( argtwo == "save" )
@@ -144,7 +143,7 @@ void editFirewall(int argc, char* argv[]){
 	else if ( argtwo == "flush" )
 		system("iptables -F");
 	else if ( argtwo == "build" ) {
-		pcol("green", "Choose filter chain: ")
+		pcol("green", "Choose filter chain: ");
 		cout << "1.) chain=\"INPUT\"" << endl;
 		cout << "2.) chain=\"OUTPUT\"" << endl;
 		cout << "3.) chain=\"FORWARD\"" << endl;
@@ -161,9 +160,121 @@ void editFirewall(int argc, char* argv[]){
 		else if ( filteropt == "3" ){
 			chain = "FORWARD";
 		}
+		else{
+			err_call("Invalid parameter.");
+		}
+		pcol("green", "Get source IP address: ");
+		cout << "1.) Firewall using a single source IP." << endl;
+		cout << "2.) Firewall using a source subnet." << endl;
+		cout << "3.) Firewall using all source networks." << endl;
+		string filtertype;
+		cout << ">";
+		cin >> filtertype;
+		string ipsource;
+		if ( filtertype == "1" ){
+			cout << "Entre the IP of the source: " << endl;
+			cout << ">";
+			cin >> ipsource;
+		}
+		else if ( filtertype == "2"  ){
+			cout << "Enter the SUBNET of the source" << endl;
+			cout << ">";
+			cin >> ipsource;
+		}
+		else if ( filtertype == "3" ){
+			ipsource = "0/0";
+		}
+		else{
+			err_call("Invalid parameter.");
+		}
+		pcol("green", "Get destination IP address: ");
+		cout << "1.) Firewall using a single destination IP." << endl;
+		cout << "2.) Firewall using a destination SUBNET." << endl;
+		cout << "3.) Firewall using all destination networks." << endl;
+		string filterdest;
+		cout << ">";
+		cin >> filterdest;
+		string ipdest;
+		if ( filterdest == "1" ){
+			cout << "Enter the IP of the destination: " << endl;
+			cout << ">";
+			cin >> ipdest;
+		}
+		else if ( filterdest == "2" ){
+			cout << "Enter the SUBNET of the destination: " << endl;
+			cout << ">";
+			cin >> ipdest;
+		}
+		else if ( filterdest == "3" ){
+			ipdest = "0/0";
+		}
+		else{
+			err_call("Invalid parameter.");
+		}
+		pcol("green", "Get protocol: ");
+		cout << "1.) Block all TCP traffic." << endl;
+		cout << "2.) Block a specific TCP service." << endl;
+		cout << "3.) Block a specific port." << endl;
+		string filterprot;
+		cout << ">";
+		cin >> filterprot;
+		string proto;
+		if ( filterprot == "1" ){
+			proto = "TCP";
+		}
+		else if ( filterprot == "2" ) {
+			cout << "Enter the TCP service name: " << endl;
+			cout << ">";
+			cin >> proto;
+		}
+		else if ( filterprot == "3" ){
+			cout << "Enter the port name: " << endl;
+			cout << ">";
+			cin >> proto;
+		}
+		else{
+			err_call("Invalid parameter.");
+		}
+		pcol("green", "Get rule: ");
+		cout << "1.) rule=\"ACCEPT\"" << endl;
+        	cout << "2.) rule=\"REJECT\"" << endl;
+       		cout << "3.) rule=\"DROP\"" << endl;
+       		cout << "4.) rule=\"LOG\"" <<endl;
+		string filterrule;
+		cout << ">";
+		cin >> filterrule;
+		string rule;
+		if ( filterrule == "1" ){
+			rule = "ACCEPT";
+		}
+		else if ( filterrule == "2" ){
+			rule = "REJECT";
+		}
+		else if ( filterrule == "3" ){
+			rule = "DROP";
+		}
+		else if ( filterrule == "4" ){
+			rule = "LOG";
+		}
+		else{
+			err_call("Invalid parameter.");
+		}
+		cout << "The generated rule is: " << endl;
+		cout << red << "iptables -A " << chain << " -s " << ipsource << " -d " << ipdest << " -p " << proto << " -j " << rule << normal << endl;
+		pcol("yellow", "Save the rule to IP tables (y/n)?");
+		string savetables;
+		cout << ">";
+		cin >> savetables;
+
+		if ( savetables == "y"){
+			string runipt = "iptables -A " + chain + " -s " + ipsource + " -d " + ipdest + " -p " + proto + " -j " + rule;
+			system( (runipt).c_str() );
+		}
+		else{
+			err_call("Option other than \"y\" specified.");
+		}
 	}
 }
-*/
 
 void showMemory(){
 	pcol("yellow", "Displaying memory usage: \n");
@@ -227,6 +338,8 @@ int main(int argc, char* argv[]){
 			encryptFile( argc, argv );
 		else if ( argtest == "serverstat"         )
 			serverUtilization( argc, argv );
+		else if ( argtest == "setiptable"         )
+			editFirewall( argc, argv );
 		else
 			err_call("\nArgument not found.\n");
 	}

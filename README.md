@@ -1,6 +1,1 @@
-Command            | Description
-------------       | ------------
-help    	   | Displays this
-users		   | Displays the system users
-groups	   	   | Displays the system groups
-removeuser	   | completely removes a specified user
+A Linux command line utility used to speed up and simplify the process of a Linux system administrator.
