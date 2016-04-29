@@ -1,5 +1,4 @@
 #!/bin/bash
-
 compile_cpp(){
 	if (g++ KommandorMain.cpp); then
 		echo "KommandorMain compiled"
@@ -8,12 +7,9 @@ compile_cpp(){
 		fi
 	fi
 }
-
 create_sym_link(){
 	if (ln -s /home/kylo/Documents/git-clones/kommandor/kommandor /usr/bin/kommandor); then
 		echo "kommandor symbolic link generated."
 	fi
 }
-
 compile_cpp
-create_sym_link

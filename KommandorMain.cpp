@@ -2,6 +2,8 @@
 #include <fstream>
 #include <iomanip>
 #include <cstdlib>
+#include <stdbool.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -19,7 +21,22 @@ class runVars{
 
 runVars rv;
 
-// PROMPT
+// COLOR PRINT FUNCTIONS
+void pcol( string x, string y ){
+	if      ( x == "green"  )
+		cout << green  << y << normal << endl;
+	else if ( x == "red"    )
+		cout << red    << y << normal << endl;
+	else if ( x == "blue"   )
+		cout << blue   << y << normal << endl;
+	else if ( x == "yellow" )
+		cout << yellow << y << normal << endl;
+}
+
+void err_call( string x ){
+	cout << red << x << normal << endl;
+}
+
 void help(){
 	cout << "\nUsage: " << endl;
 	cout << "help       : Displays this help prompt." << endl; 
@@ -31,46 +48,42 @@ void help(){
 	cout << "serverstat : Display the server utilization.\n" << endl;
 }
 
-// show the system users delimited by shell
 void showUsers(){
 	ifstream passwd("/etc/passwd");
-
 	if ( passwd ){
-		cout << yellow << "\nUsers with bash shell: " << normal << endl;
+		pcol("yellow", "\nUsers with bash shell: ");
 		system("cat /etc/passwd | grep bash");
 		cout << "\n --- \n" << endl;
 
-		cout << yellow << "\nUsers with zsh shell: " << normal << endl;
+		pcol("yellow", "Users with zsh shell: ");
 		system("cat /etc/passwd | grep zsh");
 		cout << "\n --- \n" << endl;
 
-		cout << yellow << "\nUsers with ksh shell: " << normal << endl;
+		pcol("yellow", "Users with ksh shell: ");
 		system("cat /etc/passwd | grep ksh");
 		cout << "\n --- \n" << endl;
 		passwd.close();
 	}else{
-		cout << red << "/etc/passwd not found." << normal << endl;
+		err_call("/etc/passwd file not found.");
 	}
 	passwd.close();
 }
 
 void showGroups( int argc, char* argv[] ){
 	ifstream group("/etc/group");
-
 	if( group ){
-		cout << yellow << "Displaying groups in the system: " << normal << endl;
+		pcol("yellow", "\nDisplaying groups in the system: ");
 		system("cat /etc/group");
 		cout << " " << endl;
 		group.close();
 	}else{
-		cout << red << "/etc/group not found." << normal << endl;
+		err_call("/etc/group not found.");
 	}
 	group.close();
 }
 
-// PROMPT
 void prompt(){
-	cout << blue << "\nKommandor v0.01 by Jackson Brown (jacksonconnerbrown@gmail.com)" << normal << endl; 
+	pcol("blue", "\nKommandor v0.01 by Jackson Brown (jacksonconnerbrown@gmail.com)");
 }
 
 void removeUser( int argc, char* argv[] ){
@@ -88,68 +101,85 @@ void encryptFile( int argc, char* argv[] ){
 }
 
 void serverUtilization( int argc, char* argv[]){
-	cout << yellow << "Displaying server utilization information: " << normal << endl;
-
-	cout << green << "Uptime: " << normal << endl;
+	pcol("yellow", "Displaying server utilization information: ");
+	pcol("green", "Uptime: ");
 	system("sudo uptime");
 	cout << "\n --- \n" << endl;
-	
-	cout << green << "Users connected: " << normal << endl;
+	pcol("green", "Users connected: ");
 	system("sudo who -a");
 	cout << "\n --- \n" << endl;
-
-	cout << green << "Last 3 logins: " << normal << endl;
+	pcol("green", "Last 3 logins: ");
 	system("sudo last -a | head -3");
 	cout << "\n --- \n" << endl;
-	
-	cout << green << "Most expensive processes: " << normal << endl;
+	pcol("green", "Most expensive process: ");
 	system("sudo top -b | head -10 | tail -4");
 	cout << "\n --- \n" << endl;
-
-	cout << green << "Open ports (scanned with Nmap): " << normal << endl;
+	pcol("green", "Open ports: ");
 	system("sudo nmap -sT localhost | grep -E \"(tcp|udp)\"");
 	cout << "\n --- \n" << endl;
-
-	cout << green << "Current connections: " << normal << endl;
+	pcol("green", "Current connections: ");
 	system("sudo ss -s");
 	cout << "\n --- \n" << endl;
-
-
-	// IN DEVELOPMENT
-
-	/*
-	char emailopt[] = "emailadmin";
-	if ( string(argv[2]) == string(emailopt) ){
-		cout << yellow << "Emailing administrator: " << normal << endl;
+	string emailadmin;
+	pcol("yellow", "Email administrator (y/n)?");
+	cout << ">";
+	cin >> emailadmin;
+	if ( emailadmin == "y" ){
+		pcol("yellow", "Emailing administrator: ");
 		system("kommandor serverstat | mail -s 'Kommandor serverstat output' root ");
 		cout << "OK." << endl;
 		cout << " " << endl;
+	}else{
+		err_call("Option other than \"y\" specified.\n");
 	}
-	*/
-	
 }
 
-// show system memory
-void showMemory(){
-	cout << yellow << "Displaying memory usage: \n" << normal << endl;
+/*
+void editFirewall(int argc, char* argv[]){
+	string argtwo = argv[2];
+	if ( argtwo == "save" )
+		system("iptables save");
+	else if ( argtwo == "status" )
+		system("iptables status");
+	else if ( argtwo == "flush" )
+		system("iptables -F");
+	else if ( argtwo == "build" ) {
+		pcol("green", "Choose filter chain: ")
+		cout << "1.) chain=\"INPUT\"" << endl;
+		cout << "2.) chain=\"OUTPUT\"" << endl;
+		cout << "3.) chain=\"FORWARD\"" << endl;
+		string filteropt;
+		cout << ">";
+		cin >> filteropt;
+		string chain;
+		if ( filteropt == "1" ){
+			chain = "INPUT";
+		}
+		else if ( filteropt == "2"){
+			chain = "OUTPUT";
+		}
+		else if ( filteropt == "3" ){
+			chain = "FORWARD";
+		}
+	}
+}
+*/
 
-	cout << green << "\nused memory: " << normal << endl;
+void showMemory(){
+	pcol("yellow", "Displaying memory usage: \n");
+	pcol("green", "\nUsed memory: ");
 	system("vmstat -s -SM | grep used | grep memory | sed -e 's/^[ \t]*//'");
 	cout << "\n --- \n" << endl;
-
-	cout << green << "\nused swap: " << normal << endl;
+	pcol("green", "\nUsed swap: ");
 	system("vmstat -s -SM | grep used | grep swap | sed -e 's/^[ \t]*//'");
 	cout << "\n --- \n" << endl;
-
-	cout << green << "\nfree disk space: " << normal << endl;
+	pcol("green", "\nFree disk space: ");
 	system("df -h | grep -v Filesystem");
 	cout << "\n --- \n" << endl;
-
-	cout << green << "\ncpu usage: " << normal << endl;
+	pcol("green", "\nCPU usage: ");
 	system("lscpu | grep CPU");
 	cout << "\n --- \n" << endl;
-
-	cout << green << "\nload average: " << normal << endl;
+	pcol("green", "Load average: ");
 	double load[3];  
    	if (getloadavg(load, 3) != -1){  
    		printf("%f , %f , %f\n", load[0],load[1],load[2]);
@@ -158,41 +188,47 @@ void showMemory(){
 		}
 	}
 	cout << "\n --- \n" << endl;
-
-	cout << " " << endl;
+	string emailadmin;
+	pcol("yellow", "Email administrator (y/n)?");
+	cout << ">";
+	cin >> emailadmin;
+	if ( emailadmin == "y" ){
+		pcol("yellow", "Emailing administrator: ");
+		system("kommandor serverstat | mail -s 'Kommandor serverstat output' root ");
+		cout << "OK." << endl;
+		cout << " " << endl;
+	}else{
+		err_call("Option other than \"y\" specified.\n");
+	}
 }
 
 int main(int argc, char* argv[]){
-	prompt();
-	if (argc < 2){
-		help();
-		return 1;
-	}
-	string argtest = argv[1];
-	if ( argtest == "help" ){
-		help();
-	}
-	else if ( argtest == "users" ){
-		showUsers();
-	}
-	else if ( argtest == "removeuser" ){
-		removeUser( argc, argv );
-	}
-	else if ( argtest == "groups" ){
-		showGroups( argc, argv );
-	}
-	else if ( argtest == "memuse" ){
-		showMemory();
-	}
-	else if ( argtest == "encrypt" ){
-		encryptFile( argc, argv );
-	}
-	else if ( argtest == "serverstat" ){
-		serverUtilization( argc, argv );
+	if ( getuid() != 0 ){
+		err_call("\n**************** PLEASE RUN AS ROOT ****************\n");
 	}
 	else{
-		cout << red << "\nargument not found.\n" << normal << endl;
-		help();
+		prompt();
+		if ( argc < 2 ){
+			help();
+			return 1;
+		}
+		string argtest = argv[1];
+		if      ( argtest == "help"               )
+			help();
+		else if ( argtest == "users"              )
+			showUsers();
+		else if ( argtest == "removeuser"         )
+			removeUser( argc, argv );
+		else if ( argtest == "groups"             )
+			showGroups( argc, argv );
+		else if ( argtest == "memuse"             )
+			showMemory();
+		else if ( argtest == "encrypt"            )
+			encryptFile( argc, argv );
+		else if ( argtest == "serverstat"         )
+			serverUtilization( argc, argv );
+		else
+			err_call("\nArgument not found.\n");
 	}
 	return 0;
 }
