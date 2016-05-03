@@ -38,15 +38,19 @@ void err_call( string x ){
 }
 
 void help(){
-	cout << "\nUsage: " << endl;
-	cout << "help       : Displays this help prompt." << endl; 
-	cout << "users      : Displays the system users." << endl; 
-	cout << "groups     : Displays the system groups." << endl; 
-	cout << "removeuser : Completely removes a specified user." << endl; 
-	cout << "memuse     : Show the system memory usage." << endl;
-	cout << "encrypt    : Encrypts a file using gpg." << endl;
-	cout << "serverstat : Display the server utilization." << endl;
-	cout << "setiptable : Interactively generate iptables firewalls. \n" << endl;
+	cout << blue << "\nUsage: " << normal << endl;
+	cout << "kommandor [options] [parameters] " << endl;
+
+	cout << blue << "\nOptions: " << normal << endl;
+	cout << "help        : Displays this help prompt." << endl; 
+	cout << "users       : Displays the system users." << endl; 
+	cout << "addusers    : Adds the listed users in an interactive prompt." << endl;
+	cout << "groups      : Displays the system groups." << endl; 
+	cout << "removeusers : Completely removes a specified user." << endl; 
+	cout << "memuse      : Show the system memory usage." << endl;
+	cout << "encrypt     : Encrypts a file using gpg." << endl;
+	cout << "serverstat  : Display the server utilization." << endl;
+	cout << "setiptable  : Interactively generate iptables firewalls. \n" << endl;
 }
 
 void showUsers(){
@@ -70,6 +74,26 @@ void showUsers(){
 	passwd.close();
 }
 
+void addUsers( int argc, char* argv[] ){
+	if ( argc < 3){
+		err_call("missing parameters.");
+	}
+	else{
+		cout << yellow << "adding user " << argv[2] << normal << endl;
+		rv.runVar = "sudo adduser " + string( argv[2] );
+		system( (rv.runVar).c_str() );
+		if ( argc > 3 ){
+			rv.runVar = "sudo adduser " + string( argv[3] );
+			system( (rv.runVar).c_str() );
+			if ( argc > 4 ){
+				rv.runVar = "sudo adduser " + string( argv[3] );
+				system( (rv.runVar).c_str() );
+			}
+		}
+	}
+	cout << " " << endl;
+}
+
 void showGroups( int argc, char* argv[] ){
 	ifstream group("/etc/group");
 	if( group ){
@@ -88,17 +112,35 @@ void prompt(){
 }
 
 void removeUser( int argc, char* argv[] ){
-	cout << yellow << "removing user " << argv[2] << normal << endl;
-	rv.runVar = "sudo userdel -r " + string( argv[2] );
-	system( (rv.runVar).c_str() );
+	if ( argc < 3){
+		err_call("missing parameters.");
+	}
+	else{
+		cout << yellow << "removing user " << argv[2] << normal << endl;
+		rv.runVar = "sudo userdel -r " + string( argv[2] );
+		system( (rv.runVar).c_str() );
+		if ( argc > 3 ){
+			rv.runVar = "sudo userdel -r " + string( argv[3] );
+			system( (rv.runVar).c_str() );
+			if ( argc > 4 ){
+				rv.runVar = "sudo userdel -r " + string( argv[4] );
+				system( (rv.runVar).c_str() );
+			}
+		}
+	}
 	cout << " " << endl;
 }
 
 void encryptFile( int argc, char* argv[] ){
-	cout << yellow << "encrypting file " << argv[2] << normal << endl;
-	rv.runVar = "sudo gpg -c " + string( argv[2] );
-	system ( (rv.runVar).c_str() );
-	cout << " " << endl;
+	if ( argc < 3){
+		err_call("missing parameters.");
+	}
+	else{
+		cout << yellow << "encrypting file " << argv[2] << normal << endl;
+		rv.runVar = "sudo gpg -c " + string( argv[2] );
+		system ( (rv.runVar).c_str() );
+		cout << " " << endl;
+	}
 }
 
 void serverUtilization( int argc, char* argv[]){
@@ -121,18 +163,6 @@ void serverUtilization( int argc, char* argv[]){
 	pcol("green", "Current connections: ");
 	system("sudo ss -s");
 	cout << "\n --- \n" << endl;
-	string emailadmin;
-	pcol("yellow", "Email administrator (y/n)?");
-	cout << ">";
-	cin >> emailadmin;
-	if ( emailadmin == "y" ){
-		pcol("yellow", "Emailing administrator: ");
-		system("kommandor serverstat | mail -s 'Kommandor serverstat output' root ");
-		cout << "OK." << endl;
-		cout << " " << endl;
-	}else{
-		err_call("Option other than \"y\" specified.\n");
-	}
 }
 
 void editFirewall(int argc, char* argv[]){
@@ -300,18 +330,6 @@ void showMemory(){
 		}
 	}
 	cout << "\n --- \n" << endl;
-	string emailadmin;
-	pcol("yellow", "Email administrator (y/n)?");
-	cout << ">";
-	cin >> emailadmin;
-	if ( emailadmin == "y" ){
-		pcol("yellow", "Emailing administrator: ");
-		system("kommandor serverstat | mail -s 'Kommandor serverstat output' root ");
-		cout << "OK." << endl;
-		cout << " " << endl;
-	}else{
-		err_call("Option other than \"y\" specified.\n");
-	}
 }
 
 int main(int argc, char* argv[]){
@@ -329,7 +347,7 @@ int main(int argc, char* argv[]){
 			help();
 		else if ( argtest == "users"              )
 			showUsers();
-		else if ( argtest == "removeuser"         )
+		else if ( argtest == "removeusers"        )
 			removeUser( argc, argv );
 		else if ( argtest == "groups"             )
 			showGroups( argc, argv );
@@ -341,9 +359,10 @@ int main(int argc, char* argv[]){
 			serverUtilization( argc, argv );
 		else if ( argtest == "setiptable"         )
 			editFirewall( argc, argv );
+		else if ( argtest == "addusers"            )
+			addUsers( argc, argv );
 		else
 			err_call("\nArgument not found.\n");
 	}
 	return 0;
 }
-

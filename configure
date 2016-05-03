@@ -8,8 +8,23 @@ compile_cpp(){
 	fi
 }
 create_sym_link(){
-	if (ln -s /home/kylo/Documents/git-clones/kommandor/kommandor /usr/bin/kommandor); then
-		echo "kommandor symbolic link generated."
+	if [ -e /usr/bin/kommandor ]; then
+		echo "/usr/bin/kommandor already created."
+	else
+		if (ln -s /home/kylo/Documents/git-clones/kommandor/kommandor /usr/bin/kommandor); then
+			echo "kommandor symbolic link generated."
+		fi
+	fi
+
+	echo "Create Kommandor \"k\" alias (y/n)?"
+	read yorn
+	if [ "$yorn" = "y" ]; then
+		echo "alias k=\"kommandor\"" >> ~/.bashrc
+		source ~/.bashrc
+		echo "OK."
+	else
+		echo "OK."
 	fi
 }
 compile_cpp
+create_sym_link
