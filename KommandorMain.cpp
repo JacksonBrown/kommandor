@@ -46,7 +46,7 @@ void help(){
 	cout << "memuse     : Show the system memory usage." << endl;
 	cout << "encrypt    : Encrypts a file using gpg." << endl;
 	cout << "serverstat : Display the server utilization." << endl;
-	cout << "setiptable : Interactively generate iptables firewalls. \n"
+	cout << "setiptable : Interactively generate iptables firewalls. \n" << endl;
 }
 
 void showUsers(){
