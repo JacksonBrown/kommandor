@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <stdbool.h>
 #include <unistd.h>
+#include <vector>
+#include <sstream>
 
 using namespace std;
 
@@ -33,6 +35,30 @@ void pcol( string x, string y ){
 		cout << yellow << y << normal << endl;
 }
 
+// BINARY STRING FOR IP
+string toBinary(vector<int> octets){
+	string result;
+	for (unsigned j=0; j < octets.size(); j++){
+		if (j>0)
+			result += '.';
+			int mask = 256;
+			while (mask>>=1)
+			result += '0' + ((octets[j] & mask ) != 0);
+	}
+	return result;
+}
+
+
+// CONVERT STRING TO INT VECTOR
+int getOctets(string ip, vector<int> &octets){
+	stringstream ss(ip);
+	string temp;
+	while (getline(ss,temp,'.'))
+		octets.push_back(atoi(temp.c_str()));
+	return 0;
+}
+
+
 void err_call( string x ){
 	cout << red << x << normal << endl;
 }
@@ -50,6 +76,7 @@ void help(){
 	cout << "memuse      : Show the system memory usage." << endl;
 	cout << "encrypt     : Encrypts a file using gpg." << endl;
 	cout << "serverstat  : Display the server utilization." << endl;
+	cout << "iptobinary  : Converts the following IP address to binary notation." << endl;
 	cout << "setiptable  : Interactively generate iptables firewalls. \n" << endl;
 }
 
@@ -307,6 +334,24 @@ void editFirewall(int argc, char* argv[]){
 	}
 }
 
+void ipInfoConv( int argc, char* argv[] ){
+
+	if ( argc < 3 ){
+		err_call("mssing parameters.");
+	}
+	else{
+		string string_ip = string( argv[2] );
+		vector<int> octetsIP;
+
+		getOctets(string_ip, octetsIP);
+		cout << "Binary IP: " << toBinary(octetsIP) << endl;
+
+		cout << " " << endl;
+	}
+}
+
+
+
 void showMemory(){
 	pcol("yellow", "Displaying memory usage: \n");
 	pcol("green", "\nUsed memory: ");
@@ -359,8 +404,10 @@ int main(int argc, char* argv[]){
 			serverUtilization( argc, argv );
 		else if ( argtest == "setiptable"         )
 			editFirewall( argc, argv );
-		else if ( argtest == "addusers"            )
+		else if ( argtest == "addusers"           )
 			addUsers( argc, argv );
+		else if ( argtest == "iptobinary"         )
+			ipInfoConv( argc, argv );
 		else
 			err_call("\nArgument not found.\n");
 	}
