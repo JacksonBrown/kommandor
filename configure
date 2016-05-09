@@ -21,7 +21,9 @@ create_sym_link(){
 	if [ "$yorn" = "y" ]; then
 		echo "alias k=\"kommandor\"" >> ~/.bashrc
 		source ~/.bashrc
-		echo "OK."
+		echo "GENERATED USER ALIAS"
+		echo "alias k=\"kommandor\"" >> /root/.bashrc
+		echo "GENERATED ROOT ALIAS"
 	else
 		echo "OK."
 	fi
