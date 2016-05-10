@@ -1,6 +1,6 @@
-#!/bin/bash
+#/bin/bash
 compile_cpp(){
-	if (g++ KommandorMain.cpp kommandor_cmd.cpp); then
+	if (g++ kommandor-files/KommandorMain.cpp kommandor-files/kommandor_cmd.cpp); then
 		echo "KommandorMain compiled"
 		if (mv a.out kommandor); then
 			echo "Moved \"a.out\" to kommandor."
