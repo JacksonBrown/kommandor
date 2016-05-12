@@ -25,29 +25,6 @@ class runVars{
 // RUN VARIABLE INSTANE
 runVars rv;
 
-// GENERATE HELP FUNCTION
-void help(){
-
-        // USAGE SYNTAX
-        //cout << blue << "\nUsage: " << normal << endl;
-        cout << "\nUsage: " << endl;
-        cout << "kommandor [options] [parameters] " << endl;
-
-        // OPTIONS
-        //cout << blue << "\nOptions: " << normal << endl;
-        cout << "\nOptions: " << endl;
-        cout << "help        : Displays this help prompt." << endl;
-        cout << "users       : Displays the system users." << endl;
-        cout << "addusers    : Adds the listed users in an interactive prompt." << endl;
-        cout << "groups      : Displays the system groups." << endl;
-        cout << "removeusers : Completely removes a specified user." << endl; 
-        cout << "memuse      : Show the system memory usage." << endl;
-        cout << "encrypt     : Encrypts a file using gpg." << endl;
-        cout << "serverstat  : Display the server utilization." << endl;
-        cout << "iptobinary  : Converts the following IP address to binary notation." << endl;
-        cout << "setiptable  : Interactively generate iptables firewalls. \n" << endl;
-}
-
 // COLOR PRINT FUNCTIONS
 void pcol( string x, string y ){
 
@@ -68,6 +45,42 @@ void pcol( string x, string y ){
 		cout << yellow << y << normal << endl;
 
 }
+
+// GENERATE HELP FUNCTION
+void help(){
+
+        // USAGE SYNTAX        
+        pcol("blue", "USAGE");
+        cout << "kommandor [options] [parameters] \n" << endl;
+
+        // OPTIONS
+        //cout << blue << "\nOptions: " << normal << endl;
+        pcol("blue", "OPTIONS \n");
+
+        // MISC
+        pcol("yellow", "Misc: ");
+        cout << "help        : Displays this help prompt. \n" << endl;
+
+        // USER AND GROUP MANAGEMENT
+        pcol("yellow", "User and group management: ");
+        cout << "users       : Displays the system users." << endl;
+        cout << "addusers    : Adds the listed users in an interactive prompt." << endl;
+        cout << "groups      : Displays the system groups." << endl;
+        cout << "removeusers : Completely removes a specified user. \n" << endl; 
+
+        // MEMORY USE AND STATISTICS
+        pcol("yellow", "Memory use and process statistics: ");
+        cout << "memuse      : Show the system memory usage." << endl;
+        cout << "serverstat  : Display the server utilization. \n" << endl;
+
+        // NETWORKING, ENCRYPTION, AND FIREWALL
+        pcol("yellow", "Networking, encryption, and firewall: ");
+        cout << "iptobinary  : Converts the following IP address to binary notation." << endl;
+        cout << "setiptable  : Interactively generate iptables firewalls." << endl;
+        cout << "encrypt     : Encrypts a file using gpg. \n" << endl;
+}
+
+
 
 // BINARY STRING FOR IP
 string toBinary(vector<int> octets){
@@ -98,7 +111,6 @@ string toBinary(vector<int> octets){
 	return result;
 
 }
-
 
 // CONVERT STRING TO INT VECTOR
 int getOctets(string ip, vector<int> &octets){
@@ -308,73 +320,133 @@ void removeUser( int argc, char* argv[] ){
 
 }
 
+// ENCRYPT FILE FUNCTION
 void encryptFile( int argc, char* argv[] ){
+
+	// IF ARGUMENTS ARE LESS THAN 3
 	if ( argc < 3){
+
+		// ERROR CALL THIS
 		err_call("missing parameters.");
+
 	}
 	else{
+
+		// ENCRYPT FILE PROMPT
 		cout << yellow << "encrypting file " << argv[2] << normal << endl;
+
+		// MAKE RUN VAR THIS
 		rv.runVar = "sudo gpg -c " + string( argv[2] );
+
+		// RUN THIS
 		system ( (rv.runVar).c_str() );
+
+		// GENERATE BLANK LINE
 		cout << " " << endl;
+
 	}
+	// END ELSE IF ARGUMENTS ARE LESS THAN 3
+
 }
 
+
+// SERVER STATISTICS FUNCTION
 void serverUtilization( int argc, char* argv[]){
+
+	// SERVER UTILIZATION INFORMATION
 	pcol("yellow", "Displaying server utilization information: ");
 	pcol("green", "Uptime: ");
 	system("sudo uptime");
 	cout << "\n --- \n" << endl;
+
+	// USERS CONNECTED
 	pcol("green", "Users connected: ");
 	system("sudo who -a");
 	cout << "\n --- \n" << endl;
 	pcol("green", "Last 3 logins: ");
 	system("sudo last -a | head -3");
 	cout << "\n --- \n" << endl;
+
+	// MOST EXPENSIVE PROCESS RUNNING ON THIE SYSTEM
 	pcol("green", "Most expensive process: ");
 	system("sudo top -b | head -10 | tail -4");
 	cout << "\n --- \n" << endl;
+
+	// CURRENT OPEN PORTS
 	pcol("green", "Open ports: ");
 	system("sudo nmap -sT localhost | grep -E \"(tcp|udp)\"");
 	cout << "\n --- \n" << endl;
+
+	// CURRENT CONNECTIONS
 	pcol("green", "Current connections: ");
 	system("sudo ss -s");
 	cout << "\n --- \n" << endl;
+
 }
 
+// IPTABLES FIREWALL FUNCTIOIN
 void editFirewall(int argc, char* argv[]){
+
+	// IF ARGUMENTS ARE LESS THAN 3
 	if ( argc < 3 ){
+
+		// ERROR CALL THIS
 		err_call("missing parameters.");
+
 	}
 	else{
+
+		// SET THE THIRD ARGUMENT (SECOND PARAMATER) TO A STRING VALUE
 		string argtwo = argv[2];
+
+		// IF ARGTWO IS SAVE
 		if ( argtwo == "save" )
 			system("iptables save");
+
+		// ELSE IF ARGTWO IS STATUS
 		else if ( argtwo == "status" )
 			system("iptables status");
+
+		// ELSE IF ARGTWO IS FLUSH
 		else if ( argtwo == "flush" )
 			system("iptables -F");
+
+		// ELSE IF ARGTWO IS BUILD
 		else if ( argtwo == "build" ) {
+
+			// FILTER CHAIN TYPE PROMPT
 			pcol("green", "Choose filter chain: ");
 			cout << "1.) chain=\"INPUT\"" << endl;
 			cout << "2.) chain=\"OUTPUT\"" << endl;
 			cout << "3.) chain=\"FORWARD\"" << endl;
+
+			// USER INPUT
 			string filteropt;
 			cout << ">";
 			cin >> filteropt;
 			string chain;
-			if ( filteropt == "1" ){
+
+			// IF FILTER OPTION IS ONE
+			if ( filteropt == "1" )
 				chain = "INPUT";
-			}
-			else if ( filteropt == "2"){
+
+			// ELSE IF FILTER OPTION IS TWO
+			else if ( filteropt == "2")
 				chain = "OUTPUT";
-			}
-			else if ( filteropt == "3" ){
+
+			// ELSE IF FILTER OPT IS 3
+			else if ( filteropt == "3" )
 				chain = "FORWARD";
-			}
+
+			// ELSE
 			else{
+				// ERROR CALL THIS
 				err_call("Invalid parameter.");
+
 			}
+			// END ELSE IF FILTER OPTION IS ONE
+
+			// SOURCE IP ADDRESS PROMPT
 			pcol("green", "Get source IP address: ");
 			cout << "1.) Firewall using a single source IP." << endl;
 			cout << "2.) Firewall using a source subnet." << endl;
@@ -383,151 +455,269 @@ void editFirewall(int argc, char* argv[]){
 			cout << ">";
 			cin >> filtertype;
 			string ipsource;
+
+			// IF FILTER TYPE IS ONE
 			if ( filtertype == "1" ){
 				cout << "Entre the IP of the source: " << endl;
 				cout << ">";
 				cin >> ipsource;
 			}
+
+			// ELSE IF FILTER TYPE IS TWO
 			else if ( filtertype == "2"  ){
 				cout << "Enter the SUBNET of the source" << endl;
 				cout << ">";
 				cin >> ipsource;
 			}
+
+			// ELSE IF FILTER TYPE IS 3
 			else if ( filtertype == "3" ){
 				ipsource = "0/0";
 			}
+
+			// ELSE
 			else{
+				// ERROR CALL THIS
 				err_call("Invalid parameter.");
+
 			}
+			// END ELSE IF FILTER TYPE IS ONE
+
+			// DESTINATION IP ADDRESS PROMPT
 			pcol("green", "Get destination IP address: ");
 			cout << "1.) Firewall using a single destination IP." << endl;
 			cout << "2.) Firewall using a destination SUBNET." << endl;
 			cout << "3.) Firewall using all destination networks." << endl;
+
+			// USER INPUT
 			string filterdest;
 			cout << ">";
 			cin >> filterdest;
 			string ipdest;
+
+			// IF FILTER DESTINATION IS 1
 			if ( filterdest == "1" ){
 				cout << "Enter the IP of the destination: " << endl;
 				cout << ">";
 				cin >> ipdest;
 			}
+
+			// ELSE IF FILTER DESTINATION IS TWO
 			else if ( filterdest == "2" ){
 				cout << "Enter the SUBNET of the destination: " << endl;
 				cout << ">";
 				cin >> ipdest;
 			}
+
+			// ELSE IF FILTER DESTINATION IS 3
 			else if ( filterdest == "3" ){
 				ipdest = "0/0";
 			}
+
+			// ELSE
 			else{
+			
+				// ERROR CALL THIS
 				err_call("Invalid parameter.");
+			
 			}
+
+			// GET PROTOCOL PROMPT
 			pcol("green", "Get protocol: ");
 			cout << "1.) Block all TCP traffic." << endl;
 			cout << "2.) Block a specific TCP service." << endl;
 			cout << "3.) Block a specific port." << endl;
+
+			// USER INPUT
 			string filterprot;
 			cout << ">";
 			cin >> filterprot;
 			string proto;
+
+			// IF FILTER PROTOCOL IS ONE
 			if ( filterprot == "1" ){
 				proto = "TCP";
 			}
+
+			// ELSE IF FILTER PROTOCOL IS TWO
 			else if ( filterprot == "2" ) {
 				cout << "Enter the TCP service name: " << endl;
 				cout << ">";
 				cin >> proto;
 			}
+
+			// ELSE IF FILTER PROTOCOL IS 3
 			else if ( filterprot == "3" ){
 				cout << "Enter the port name: " << endl;
 				cout << ">";
 				cin >> proto;
 			}
+
+			// ELSE
 			else{
+
+				// ERROR CALL THIS
 				err_call("Invalid parameter.");
+
 			}
+
+			// GET RULE PROMPT
 			pcol("green", "Get rule: ");
 			cout << "1.) rule=\"ACCEPT\"" << endl;
         		cout << "2.) rule=\"REJECT\"" << endl;
   	     		cout << "3.) rule=\"DROP\"" << endl;
        			cout << "4.) rule=\"LOG\"" <<endl;
+
+       			// USER INPUT
 			string filterrule;
 			cout << ">";
 			cin >> filterrule;
 			string rule;
+
+			// IF FILTER RULE IS ONE
 			if ( filterrule == "1" ){
 				rule = "ACCEPT";
 			}
+
+			// ELSE IF FILTER RULE IS TWO
 			else if ( filterrule == "2" ){
 				rule = "REJECT";
 			}
+
+			// ELSE IF FILTER RULE IS 3
 			else if ( filterrule == "3" ){
 				rule = "DROP";
 			}
+
+			// ELSE IF FILTER RULE IS 4
 			else if ( filterrule == "4" ){
 				rule = "LOG";
 			}
+
+			// ELSE
 			else{
+
+				// ERROR CALL THIS
 				err_call("Invalid parameter.");
+
 			}
+
+			// GENERATED RULE PROMPT
 			cout << "The generated rule is: " << endl;
 			cout << red << "iptables -A " << chain << " -s " << ipsource << " -d " << ipdest << " -p " << proto << " -j " << rule << normal << endl;
+
+			// SAVE THE RULE PROMPT
 			pcol("yellow", "Save the rule to IP tables (y/n)?");
+
+			// USER INPUT
 			string savetables;
 			cout << ">";
 			cin >> savetables;
+
+			// IF THE USER WANTS TO SAVE THE TABLES
 			if ( savetables == "y"){
-				string runipt = "iptables -A " + chain + " -s " + ipsource + " -d " + ipdest + " -p " + proto + " -j " + rule;
-				system( (runipt).c_str() );
+
+				// SET RUNVAR TO THIS
+				rv.runVar = "iptables -A " + chain + " -s " + ipsource + " -d " + ipdest + " -p " + proto + " -j " + rule;
+
+				// RUN THIS
+				system( (rv.runVar).c_str() );
+
 			}
+
+			// ELSE
 			else{
+
+				// ERROR CALL THIS
 				err_call("Option other than \"y\" specified.");
+
 			}
+			// END ELSE IF THE USER WANTS TO SAVE THE TABLES
+
 		}
+		// END ELSE IF ARGTWO IS BUILD
+
 	}
+	// END ELSE IF ARGUMENTS ARE LESS THAN 3
+
 }
 
+// IP TO BINARY CONVERSION MAIN FUNCTION
 void ipInfoConv( int argc, char* argv[] ){
 
+	// IF ARGUMENTS ARE LESS THAN 3
 	if ( argc < 3 ){
+
+		// ERROR CALL THIS
 		err_call("mssing parameters.");
+
 	}
 	else{
+
+		// SET A STRING FOR THE IP
 		string string_ip = string( argv[2] );
 		vector<int> octetsIP;
 
+		// RUN GETOCTETS ON VECTOR AND STRING
 		getOctets(string_ip, octetsIP);
+
+		// SHOW BINARY VALUE
 		cout << "Binary IP: " << toBinary(octetsIP) << endl;
 
+		// GENERATE BLANK LINE
 		cout << " " << endl;
 	}
 }
 
 
-
+// SHOW SYSTEM MEMORY USAGE
 void showMemory(){
+
+	// DISPLAYING MEM USE PROMPT
 	pcol("yellow", "Displaying memory usage: \n");
+
+	// USED MEMORY PROMPT
 	pcol("green", "\nUsed memory: ");
 	system("vmstat -s -SM | grep used | grep memory | sed -e 's/^[ \t]*//'");
 	cout << "\n --- \n" << endl;
+
+	// USED SWAP
 	pcol("green", "\nUsed swap: ");
 	system("vmstat -s -SM | grep used | grep swap | sed -e 's/^[ \t]*//'");
 	cout << "\n --- \n" << endl;
+
+	// FREE DISK SPACE
 	pcol("green", "\nFree disk space: ");
 	system("df -h | grep -v Filesystem");
 	cout << "\n --- \n" << endl;
+
+	// CPU USAGE
 	pcol("green", "\nCPU usage: ");
 	system("lscpu | grep CPU");
 	cout << "\n --- \n" << endl;
+
+	// CPU LOADAVERAGE
 	pcol("green", "Load average: ");
 	double load[3];  
+
+	// IF LOAD AVERAGE FROM GETLOADAVG IS NOT NEGATIVE ONE
    	if (getloadavg(load, 3) != -1){  
    		printf("%f , %f , %f\n", load[0],load[1],load[2]);
+
+   		// IF THE LOAD AVERAGE IS GREATER THAN 50
 		if ( load [0] > 0.50 ){
-			cout << red << "CPU load average is above 0.50!" << normal << endl;
+
+			// ERROR CALL THIS
+			err_call("CPU load average is above 0.50!");
+
 		}
+		// END IF THE LOAD AVERAGE IS GREATER THAN 50
+
 	}
+	// END IF LOAD AVERAGE FROM GETLOADAVG IS NOT NEGATIVE ONE
+
+	// GENERATE BLANK LINE
 	cout << "\n --- \n" << endl;
+
 }
 
