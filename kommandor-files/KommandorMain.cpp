@@ -14,7 +14,7 @@ using namespace std;
 
 int main(int argc, char* argv[]){
 	if ( getuid() != 0 ){
-		err_call("\n**************** PLEASE RUN AS ROOT ****************\n");
+		err_call("\n\n**************** PLEASE RUN AS ROOT ****************\n");
 	}
 	else{
 		prompt();
