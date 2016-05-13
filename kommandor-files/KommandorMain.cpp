@@ -26,7 +26,7 @@ int main(int argc, char* argv[]){
 		if      ( argtest == "help"               )
 			help();
 		else if ( argtest == "users"              )
-			showUsers();
+			showUsers( argc, argv );
 		else if ( argtest == "removeusers"        )
 			removeUser( argc, argv );
 		else if ( argtest == "groups"             )
@@ -43,6 +43,8 @@ int main(int argc, char* argv[]){
 			addUsers( argc, argv );
 		else if ( argtest == "iptobinary"         )
 			ipInfoConv( argc, argv );
+		else if ( argtest == "editconf"           )
+			editConfigFile( argc, argv );
 		else
 			err_call("\nArgument not found.\n");
 	}

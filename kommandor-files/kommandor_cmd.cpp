@@ -51,15 +51,20 @@ void help(){
 
         // USAGE SYNTAX        
         pcol("blue", "USAGE");
-        cout << "kommandor [options] [parameters] \n" << endl;
+        cout << "kommandor [options] [parameters] " << endl;
+        cout << "kommandor editconf [apache/sshd/logins]" << endl;
+        cout << "kommandor removeusers/addusers [user1, user2, ...]" << endl;
+        cout << "kommandor users [search string (similar to getent)]" << endl;
+
+        cout << " " << endl;
 
         // OPTIONS
-        //cout << blue << "\nOptions: " << normal << endl;
         pcol("blue", "OPTIONS \n");
 
         // MISC
         pcol("yellow", "Misc: ");
-        cout << "help        : Displays this help prompt. \n" << endl;
+        cout << "help        : Displays this help prompt." << endl;
+        cout << "editconf    : Edits a configuration file based on flags. \n" << endl;
 
         // USER AND GROUP MANAGEMENT
         pcol("yellow", "User and group management: ");
@@ -144,7 +149,7 @@ void err_call( string x ){
 }
 
 // SHOW USERS FUNCTION
-void showUsers(){
+void showUsers( int argc, char* argv[] ){
 
 	// GENERATE INPUT FILE STREAM FOR PASSWD CHECK
 	ifstream passwd("/etc/passwd");
@@ -152,23 +157,39 @@ void showUsers(){
 	// IF PASSWD IS EXISTING
 	if ( passwd ){
 
-		// SHOW BASH SHELL USERS
-		pcol("yellow", "\nUsers with bash shell: ");
-		system("cat /etc/passwd | grep bash");
-		cout << "\n --- \n" << endl;
+		if ( argc > 2 ){
 
-		// SHOW ZSH SHELL USERS
-		pcol("yellow", "Users with zsh shell: ");
-		system("cat /etc/passwd | grep zsh");
-		cout << "\n --- \n" << endl;
+			// SEARCHING PROMPT
+			cout << yellow << "\nSearching for " << argv[2] << " in passwd: " << endl;
 
-		// SHOW KSH SHELL USERS
-		pcol("yellow", "Users with ksh shell: ");
-		system("cat /etc/passwd | grep ksh");
-		cout << "\n --- \n" << endl;
+			// SET RUNVAR TO THIS AND RUN THIS
+			rv.runVar = "cat /etc/passwd | grep " + string( argv[2] );
+			system( (rv.runVar).c_str() );
 
-		// CLOSE THE PASSWD FILE STREAM
-		passwd.close();
+			// GENERATE BLANK LINE
+			cout << " " << endl; 
+
+		}
+		else{
+
+			// SHOW BASH SHELL USERS
+			pcol("yellow", "\nUsers with bash shell: ");
+			system("cat /etc/passwd | grep bash");
+			cout << "\n --- \n" << endl;
+
+			// SHOW ZSH SHELL USERS
+			pcol("yellow", "Users with zsh shell: ");
+			system("cat /etc/passwd | grep zsh");
+			cout << "\n --- \n" << endl;
+
+			// SHOW KSH SHELL USERS
+			pcol("yellow", "Users with ksh shell: ");
+			system("cat /etc/passwd | grep ksh");
+			cout << "\n --- \n" << endl;
+
+			// CLOSE THE PASSWD FILE STREAM
+			passwd.close();
+		}
 	}else{
 
 		// IF PASSWD IS NOT FOUND SHOW THIS
@@ -718,6 +739,72 @@ void showMemory(){
 
 	// GENERATE BLANK LINE
 	cout << "\n --- \n" << endl;
+
+}
+
+void editConfigFile( int argc, char* argv[] ){
+
+	// IF ARGUMENTS ARE LESS THAN 3
+	if ( argc < 3 ){
+
+		// ERROR THIS
+		err_call("missing parameters.");
+
+	}
+	else{
+
+		// PROMPT
+		cout << yellow << "Editing configuration file. \n" << normal << endl;
+
+		// SET RUNVAR TO THIS
+		rv.runVar = string( argv[2] );
+
+		// IF RUNVAR IS EQUAL TO SSHD
+		if ( rv.runVar == "sshd" ){
+
+			// RESET RUNVAR TO THIS THEN RUN IT
+			rv.runVar = "vim /etc/ssh/sshd_config";
+			system( (rv.runVar).c_str() );
+
+		}
+		else if ( rv.runVar == "logins" ){
+
+			// RESET RUNVAR TO THIS THEN RUN IT
+			rv.runVar = "vim /etc/login.defs";
+			system( (rv.runVar).c_str() );
+
+		}
+		else if ( rv.runVar == "apache" ){
+
+			if ( argc > 3 ){
+
+				// GENERATE APACHE TYPE STRING TO ARGUMENT 4
+				string apacheType = string( argv[3] );
+
+				// IF APACHE TYPE IS DEFAULT
+				if ( apacheType == "default" ){
+
+					// SET RUNVAR TO THIS THEN RUN IT
+					rv.runVar = "vim /etc/apache2/sites-enabled/000-default.conf";
+					system( (rv.runVar).c_str() );
+
+				}
+
+			}
+			else{
+
+				// SET RUNVAR TO THIS THEN RUN IT
+				rv.runVar = "vim /etc/apache2/apache2.conf";
+				system( (rv.runVar).c_str() );
+
+			}
+			// END IF ARGUMENTS ARE GREATER THAN 3
+
+		}
+		// END IF RUNVAR IS EQUAL TO SSHD
+
+	}
+	// END IF ARGUMENTS ARE LESS THAN 3
 
 }
 
