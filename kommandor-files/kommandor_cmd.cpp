@@ -717,6 +717,11 @@ void showMemory(){
 	system("lscpu | grep CPU");
 	cout << "\n --- \n" << endl;
 
+	// CPU USAGE
+	pcol("green", "\nFree Output: ");
+	system("free -h");
+	cout << "\n --- \n" << endl;
+
 	// CPU LOADAVERAGE
 	pcol("green", "Load average: ");
 	double load[3];  
